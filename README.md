@@ -1,55 +1,41 @@
-# GPS-GLASS: Learning Nighttime Semantic Segmentation Using Daytime Video and GPS data
-Official implementation of GPS-GLASS: Learning Nighttime Semantic Segmentation Using Daytime Video and GPS data [arXiv](https://arxiv.org/abs/2207.13297)
+# QUANTIZATION-FRIENDLY SUPER RESOLUTION: UNVEILING THE BENEFITS OF ACTIVATION NORMALIZATION
 
-#####  Overview:
-<img src="https://github.com/jimmy9704/GPS-GLASS/blob/main/image/network.png" width="800"/>
-
-##### visualization results:
-ACDC-night            |  Dark Zurich-val
-:-------------------------:|:-------------------------:
-<img src="https://github.com/jimmy9704/GPS-GLASS/blob/main/video/ACDC-night.gif" width="350"/> |<img src="https://github.com/jimmy9704/GPS-GLASS/blob/main/video/Dark_Zurich-val.gif" width="350"/>
-
-## Requirements
-* python3.7
-* pytorch==1.9.0
-* cuda10.2
+## Environments
+사용된 환경은 environments.txt 를 확인하시면 됩니다.
 
 ## Datasets
-**Cityscapes**: Please follow the instructions in [Cityscape](https://www.cityscapes-dataset.com/) to download the training set.
+DIV2K, Urban100, B100, Set5, Set14 데이터셋이 사용되었으며 폴더 구성 Tree는 다음과 같습니다.
 
-**Dark-Zurich**: Please follow the instructions in [Dark-Zurich](https://www.trace.ethz.ch/publications/2019/GCMA_UIoU/) to download the training/val/test set.
+dataset
+├── benchmark
+│   ├── B100
+│   ├── Set14
+│   ├── Set5
+│   └── Urban100
+├── DIV2K
+│   ├── bin
+│   ├── DIV2K_test_LR_bicubic
+│   ├── DIV2K_test_LR_unknown
+│   ├── DIV2K_train_HR
+│   ├── DIV2K_train_LR_bicubic
+│   ├── DIV2K_train_LR_unknown
+│   ├── test2k
+│   └── test4k
 
-**ACDC**: Please follow the instructions in [ACDC](https://acdc.vision.ee.ethz.ch/) to download the training/val/test set.
+batchnorm
+├── DDTB
+├── environments.txt
+├── experiment
+│   ├── EDSR_dBN_x4
+│   ├── EDSR_x4
+│   └── output
+└── PAMS
 
-**NightCity+**: Please follow the instructions in [NightCity+](https://github.com/xdeng7/NightLab) to download the training/val set.
+## Training & Testing
+PAMS 및 DDTB 폴더 내부의 train.sh 또는 test.sh를 실행하면 학습 및 테스트를 할 수 있습니다.
 
-## Testing
-Pretrained models can be downloaded form [here](https://www.dropbox.com/s/xmon1vnqsn2zvwz/trained_models.zip?dl=0).
-
-
-To reproduce the reported results in our paper, follow these steps:
-```
-Step1: download the trained models and put it in the root.
-Step2: change the data and model paths in configs/test_config.py
-Step3: run "python evaluate.py"
-Step4: change the ground truth data path in compute_iou.py
-Step5: run "python compute_iou.py"
-```
-
-## Acknowledgments
-The code is based on [DANNet](https://github.com/W-zx-Y/DANNet), [AdaptSegNet](https://github.com/wasidennis/AdaptSegNet) .
-
-## Related works
-* [MGCDA](https://github.com/sakaridis/MGCDA)
-* [GCMA](https://www.trace.ethz.ch/publications/2019/GCMA_UIoU/GCMA_UIoU-Sakaridis+Dai+Van_Gool-ICCV_19.pdf)
-* [DANNet](https://github.com/W-zx-Y/DANNet)
-
-## Citation
-```
-@InProceedings{lee2023gps,
-    author    = {Lee, Hongjae and Han, Changwoo and Jung, Seung-Won},
-    title     = {{GPS-GLASS}: Learning Nighttime Semantic Segmentation Using Daytime Video and GPS data},
-    booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV) Workshops},
-    year      = {2023}
-}
-```
+## 참고
+- experiment 폴더 내부의 EDSR_dBN_x4 및 EDSR_x4 는 각각 BN 포함 유무에 따른 Full-Precision pretrain 파일입니다.
+- train.sh를 통해 새로 학습시키는 모델은 experiment/output 폴더 내부에 생성됩니다.
+- RDN 등의 모델을 추가적으로 학습시키기 위해서 DDTB 내부의 main_ori.py를 사용하면 됩니다.
+- PAMS 및 DDTB의 model 폴더 내부에 각 모델 구조가 구현되어 있습니다. BN이 추가된 모델은 기존 Fake quantization method인 PAMS 및 DDTB에 기반하여 구현되어 있으며, 하드웨어에 따른 실제 양자화 구현을 위해 추가 변형이 요구될 수 있습니다. 
